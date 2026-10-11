@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>李清照 · 千古第一才女</title>
+<style>
+    /* ============ 全局古风基调 ============ */
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+        margin: 0; padding: 0;
+        background-color: #f4ecd8;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(210, 180, 140, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(180, 150, 120, 0.15) 0%, transparent 40%);
+        font-family: "STKaiti", "KaiTi", "楷体", "SimSun", serif;
+        color: #3e3226;
+        line-height: 1.8;
+        min-height: 100vh;
+    }
+    
+    /* 顶部标题区 */
+    .hero {
+        text-align: center;
+        padding: 60px 20px 40px;
+        background: linear-gradient(180deg, rgba(244,236,216,0.9), rgba(244,236,216,0));
+        position: relative;
+    }
+    .hero h1 {
+        font-size: 48px;
+        margin: 0 0 10px;
+        letter-spacing: 12px;
+        color: #5c4033;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        font-weight: normal;
+    }
+    .hero .subtitle {
+        font-size: 16px;
+        color: #8b7355;
+        letter-spacing: 4px;
+    }
+    .hero .seal {
+        display: inline-block;
+        margin-top: 15px;
+        border: 2px solid #a0522d;
+        color: #a0522d;
+        padding: 3px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        letter-spacing: 3px;
+    }
+
+    /* 导航栏 */
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px 10px;
+        position: sticky;
+        top: 0;
+        background: rgba(244,236,216,0.95);
+        backdrop-filter: blur(5px);
+        z-index: 100;
+        border-bottom: 1px solid #d4c5a9;
+    }
+    .nav button {
+        background: transparent;
+        border: 1px solid #c4b498;
+        color: #5c4033;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-family: inherit;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .nav button:hover, .nav button.active {
+        background: #8b7355;
+        color: #f4ecd8;
+        border-color: #8b7355;
+    }
+
+    /* 内容区 */
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px 20px 80px;
+    }
+    .section { display: none; animation: fadeIn 0.5s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-title {
+        text-align: center;
+        font-size: 26px;
+        color: #5c4033;
+        letter-spacing: 6px;
+        margin: 0 0 30px;
+        position: relative;
+        font-weight: normal;
+    }
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 2px;
+        background: #a0522d;
+        margin: 12px auto 0;
+    }
+
+    /* 生平卡片 */
+    .bio-card {
+        background: rgba(255,255,255,0.6);
+        border: 1px solid #d4c5a9;
+        border-radius: 8px;
+        padding: 25px 30px;
+        margin-bottom: 25px;
+        box-shadow: 3px 3px 0 rgba(160, 82, 45, 0.08);
+    }
+    .bio-card h3 {
+        font-size: 20px;
+        color: #8b4513;
+        margin: 0 0 15px;
+        padding-left: 15px;
+        border-left: 4px solid #a0522d;
+        font-weight: normal;
+    }
+    .bio-card p {
+        margin: 0 0 12px;
+        font-size: 16px;
+        text-indent: 2em;
+        color: #4a3f30;
+    }
+    .bio-card .quote-line {
+        text-align: right;
+        font-size: 14px;
+        color: #8b7355;
+        font-style: italic;
+        margin-top: 15px;
+        text-indent: 0;
+    }
+
+    /* 诗词卡片 */
+    .poem-card {
+        background: linear-gradient(135deg, #fdfbf7, #f4ecd8);
+        border: 1px solid #d4c5a9;
+        border-radius: 8px;
+        padding: 30px;
+        margin-bottom: 25px;
+        text-align: center;
+        position: relative;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+    }
+    .poem-card::before {
+        content: '❖';
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        color: #c4b498;
+        font-size: 18px;
+    }
+    .poem-card h3 {
+        font-size: 22px;
+        color: #8b4513;
+        margin: 0 0 8px;
+        letter-spacing: 4px;
+        font-weight: normal;
+    }
+    .poem-card .author {
+        font-size: 13px;
+        color: #999;
+        margin-bottom: 20px;
+    }
+    .poem-card .poem-text {
+        font-size: 17px;
+        line-height: 2.2;
+        color: #3e3226;
+        letter-spacing: 2px;
+    }
+    .poem-card .poem-note {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px dashed #d4c5a9;
+        font-size: 14px;
+        color: #8b7355;
+        text-align: left;
+        text-indent: 2em;
+    }
+
+    /* 朋友圈样式 */
+    .moment {
+        display: flex;
+        gap: 12px;
+        background: rgba(255,255,255,0.7);
+        border: 1px solid #e0d5c0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .moment-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #d4a574, #8b4513);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+        font-family: "STKaiti", serif;
+    }
+    .moment-body { flex: 1; min-width: 0; }
+    .moment-name {
+        font-size: 15px;
+        color: #5c4033;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+    .moment-text {
+        font-size: 15px;
+        color: #3e3226;
+        margin-bottom: 10px;
+        line-height: 1.7;
+    }
+    .moment-date {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 8px;
+    }
+    .moment-actions {
+        display: flex;
+        gap: 15px;
+        font-size: 13px;
+        color: #8b7355;
+        border-top: 1px solid #eee;
+        padding-top: 8px;
+        margin-top: 8px;
+    }
+    .moment-likes {
+        background: #f4ecd8;
+        border-radius: 4px;
+        padding: 10px 12px;
+        font-size: 13px;
+        color: #5c4033;
+        margin-top: 10px;
+        line-height: 1.6;
+    }
+    .moment-likes .liker { color: #8b4513; font-weight: bold; }
+    .moment-comments {
+        margin-top: 8px;
+        padding-left: 10px;
+        border-left: 2px solid #d4c5a9;
+    }
+    .moment-comment {
+        font-size: 13px;
+        color: #4a3f30;
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+    .moment-comment .commenter { color: #8b4513; font-weight: bold; }
+
+    /* 返回顶部 */
+    .back-top {
+        position: fixed;
+        right: 20px;
+        bottom: 30px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #8b7355;
+        color: #f4ecd8;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        display: none;
+        z-index: 99;
+    }
+    .back-top.show { display: block; }
+
+    @media (max-width: 600px) {
+        .hero h1 { font-size: 32px; letter-spacing: 8px; }
+        .nav button { padding: 6px 12px; font-size: 13px; }
+        .bio-card, .poem-card { padding: 20px; }
+        .bio-card p, .poem-card .poem-text { font-size: 15px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- 顶部 -->
+<div class="hero">
+    <h1>李清照</h1>
+    <div class="subtitle">千古第一才女 · 易安居士</div>
+    <div class="seal">宋代 · 婉约词宗</div>
+</div>
+
+<!-- 导航 -->
+<div class="nav">
+    <button class="active" onclick="switchTab('life', this)">生平经历</button>
+    <button onclick="switchTab('poems', this)">千古名篇</button>
+    <button onclick="switchTab('love', this)">伉俪情深</button>
+    <button onclick="switchTab('moments', this)">易安朋友圈</button>
+</div>
+
+<!-- 内容容器 -->
+<div class="container">
+
+    <!-- 生平经历 -->
+    <div id="life" class="section active">
+        <h2 class="section-title">生 平 经 历</h2>
+
+        <div class="bio-card">
+            <h3>少年时期 · 书香才女（1084-1101）</h3>
+            <p>李清照，号易安居士，齐州章丘（今山东济南）人，生于宋神宗元丰七年。父亲李格非是苏轼的学生，官至礼部员外郎，家中藏书甚富；母亲王氏亦出身名门，知书能文。自幼在浓厚的文学氛围中长大，她聪慧颖悟，博览群书，少年时便以词章崭露头角。</p>
+            <p>十六七岁时，她写下《如梦令·常记溪亭日暮》，以“争渡，争渡，惊起一滩鸥鹭”的灵动笔触，写出少女游赏的欢愉，一时在京城文人圈中传诵。彼时的她，生活优裕，性情率真，对未来充满憧憬。</p>
+            <p class="quote-line">—— 常记溪亭日暮，沉醉不知归路。</p>
+        </div>
+
+        <div class="bio-card">
+            <h3>青年时期 · 琴瑟和鸣（1101-1127）</h3>
+            <p>宋徽宗建中靖国元年（1101年），十八岁的李清照嫁给了太学生赵明诚。赵明诚出身官宦之家，酷爱金石书画，两人志趣相投，婚后生活清雅而甜蜜。他们共同搜集金石碑刻、校勘古籍，常以“赌书泼茶”为乐，传为千古佳话。</p>
+            <p>然而好景不长，朝廷党争波及李赵两家，李清照曾随夫屏居青州十余年。这段时期虽远离仕途喧嚣，却是她创作与学术的黄金期。她写下《一剪梅》《醉花阴》等名篇，词风清丽婉约，情意绵长。</p>
+            <p class="quote-line">—— 此情无计可消除，才下眉头，却上心头。</p>
+        </div>
+
+        <div class="bio-card">
+            <h3>中晚年时期 · 国破家亡（1127-1155）</h3>
+            <p>靖康之变后，北宋灭亡，李清照随夫南渡。建炎三年（1129年），赵明诚病逝于建康，她从此孤身一人，漂泊江南。此后数年，她带着与丈夫毕生收藏的金石文物辗转流离，几经盗失，身心俱疲。</p>
+            <p>晚年的李清照定居临安（今杭州），生活清苦，却笔耕不辍。她写下了《声声慢》《永遇乐》等沉郁悲怆之作，将国破家亡、夫死身孤的深切痛楚融入词中，风格从早年的清新明丽转为沉哀入骨，达到了艺术上的又一高峰。</p>
+            <p class="quote-line">—— 寻寻觅觅，冷冷清清，凄凄惨惨戚戚。</p>
+        </div>
+    </div>
+
+    <!-- 千古名篇 -->
+    <div id="poems" class="section">
+        <h2 class="section-title">千 古 名 篇</h2>
+
+        <div class="poem-card">
+            <h3>如梦令</h3>
+            <div class="author">宋 · 李清照</div>
+            <div class="poem-text">
+                常记溪亭日暮，沉醉不知归路。<br>
+                兴尽晚回舟，误入藕花深处。<br>
+                争渡，争渡，惊起一滩鸥鹭。
+            </div>
+            <div class="poem-note">这是李清照少女时期的代表作，寥寥数语勾勒出夏日游赏的欢快画面，语言清新自然，充满青春气息。</div>
+        </div>
+
+        <div class="poem-card">
+            <h3>一剪梅</h3>
+            <div class="author">宋 · 李清照</div>
+            <div class="poem-text">
+                红藕香残玉簟秋。轻解罗裳，独上兰舟。<br>
+                云中谁寄锦书来？雁字回时，月满西楼。<br>
+                花自飘零水自流。一种相思，两处闲愁。<br>
+                此情无计可消除，才下眉头，却上心头。
+            </div>
+            <div class="poem-note">此词写与丈夫赵明诚离别后的相思之情，语言婉约，情意缠绵，是宋词中写相思的经典之作。</div>
+        </div>
+
+        <div class="poem-card">
+            <h3>醉花阴</h3>
+            <div class="author">宋 · 李清照</div>
+            <div class="poem-text">
+                薄雾浓云愁永昼，瑞脑销金兽。<br>
+                佳节又重阳，玉枕纱厨，半夜凉初透。<br>
+                东篱把酒黄昏后，有暗香盈袖。<br>
+                莫道不销魂，帘卷西风，人比黄花瘦。
+            </div>
+            <div class="poem-note">“人比黄花瘦”一句，以菊喻人，将思念之苦写得入木三分，据说赵明诚读后自愧不如。</div>
+        </div>
+
+        <div class="poem-card">
+            <h3>声声慢</h3>
+            <div class="author">宋 · 李清照</div>
+            <div class="poem-text">
+                寻寻觅觅，冷冷清清，凄凄惨惨戚戚。<br>
+                乍暖还寒时候，最难将息。<br>
+                三杯两盏淡酒，怎敌他、晚来风急？<br>
+                雁过也，正伤心，却是旧时相识。<br>
+                满地黄花堆积。憔悴损，如今有谁堪摘？<br>
+                守着窗儿，独自怎生得黑？<br>
+                梧桐更兼细雨，到黄昏、点点滴滴。<br>
+                这次第，怎一个愁字了得！
+            </div>
+            <div class="poem-note">晚年代表作，开篇十四叠字堪称千古绝唱，写尽国破家亡、孤苦无依的深重哀愁。</div>
+        </div>
+    </div>
+
+    <!-- 伉俪情深 -->
+    <div id="love" class="section">
+        <h2 class="section-title">伉 俪 情 深</h2>
+
+        <div class="bio-card">
+            <h3>初见 · 赌书泼茶</h3>
+            <p>李清照与赵明诚的婚姻，是宋代文坛最令人艳羡的佳话。两人门当户对，志趣相投，婚后常一起校勘古籍、品评书画。他们有个著名的游戏：饭后烹茶，指着满屋藏书考问彼此某典故出自哪本书第几页，赢的人先喝茶。李清照才思敏捷，常笑得前仰后合，茶泼了一身——这便是“赌书泼茶”的由来。</p>
+            <p class="quote-line">—— 赌书消得泼茶香，当时只道是寻常。</p>
+        </div>
+
+        <div class="bio-card">
+            <h3>别离 · 一种相思，两处闲愁</h3>
+            <p>赵明诚出仕后，夫妻常分隔两地。李清照独居青州，将思念写入词中。《一剪梅》《醉花阴》皆作于这一时期。“云中谁寄锦书来”是她对丈夫书信的殷切期盼，“人比黄花瘦”是她独守空闺的真实写照。聚少离多的日子里，诗词成了她唯一的寄托。</p>
+            <p class="quote-line">—— 花自飘零水自流。一种相思，两处闲愁。</p>
+        </div>
+
+        <div class="bio-card">
+            <h3>永诀 · 从此阴阳两隔</h3>
+            <p>建炎三年（1129年），赵明诚在赴任湖州途中染病，病逝于建康，年仅四十九岁。李清照痛不欲生，亲自撰写祭文，却因悲痛过度，文中竟无一字留存。丈夫走后，她独自带着两人毕生搜集的金石文物南逃，屡遭兵燹盗劫。从此，那个写下“争渡，争渡”的明媚少女，变成了“寻寻觅觅，冷冷清清”的迟暮词人。</p>
+            <p class="quote-line">—— 物是人非事事休，欲语泪先流。</p>
+        </div>
+    </div>
+
+    <!-- 朋友圈 -->
+    <div id="moments" class="section">
+        <h2 class="section-title">易 安 朋 友 圈</h2>
+        <p style="text-align:center; color:#8b7355; font-size:14px; margin-top:-15px; margin-bottom:25px;">假如李清照有朋友圈，她的一生会怎样发动态？</p>
+
+        <!-- 动态1 -->
+        <div class="moment">
+            <div class="moment-avatar">清</div>
+            <div class="moment-body">
+                <div class="moment-name">李清照</div>
+                <div class="moment-text">今日与姐妹们游溪亭，饮酒作词，不知不觉竟醉得找不到回家的路。划着小船误入藕花深处，惊起一滩鸥鹭，好不快活！</div>
+                <div class="moment-date">元符二年 · 春</div>
+                <div class="moment-actions">💬 评论　❤️ 赞</div>
+                <div class="moment-likes">
+                    <span class="liker">赵明诚</span>、<span class="liker">李格非</span>、<span class="liker">王氏</span>、<span class="liker">晁补之</span>、<span class="liker">张耒</span>、<span class="liker">綦崇礼</span>、<span class="liker">李清照的闺中密友</span>、<span class="liker">溪亭船夫</span>、<span class="liker">藕花深处的鸥鹭</span> 等 18 人觉得很赞
+                </div>
+                <div class="moment-comments">
+                    <div class="moment-comment"><span class="commenter">李格非：</span>吾家女儿，才气不输须眉！</div>
+                    <div class="moment-comment"><span class="commenter">赵明诚：</span>下次游湖带上我，我替你划船。</div>
+                    <div class="moment-comment"><span class="commenter">晁补之：</span>好一句“争渡，争渡”，后生可畏！</div>
+                    <div class="moment-comment"><span class="commenter">闺中密友：</span>易安又贪杯了哈哈，下次可得少喝点！</div>
+                    <div class="moment-comment"><span class="commenter">王氏：</span>女儿家家的，少喝些酒，早些回家。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态2 -->
+        <div class="moment">
+            <div class="moment-avatar">清</div>
+            <div class="moment-body">
+                <div class="moment-text">新婚燕尔，与明诚共校古籍，赌书泼茶，笑语满堂。人生之乐，莫过于此。</div>
+                <div class="moment-date">建中靖国元年 · 婚后</div>
+                <div class="moment-actions">💬 评论　❤️ 赞</div>
+                <div class="moment-likes">
+                    <span class="liker">赵明诚</span>、<span class="liker">綦崇礼</span>、<span class="liker">李格非</span>、<span class="liker">王氏</span>、<span class="liker">太学同窗</span>、<span class="liker">金石圈友人</span> 等 15 人觉得很赞
+                </div>
+                <div class="moment-comments">
+                    <div class="moment-comment"><span class="commenter">赵明诚：</span>得妻如此，夫复何求。</div>
+                    <div class="moment-comment"><span class="commenter">友人甲：</span>你们夫妻真是神仙眷侣！</div>
+                    <div class="moment-comment"><span class="commenter">綦崇礼：</span>下次校书，叫上我一起，我也来学学。</div>
+                    <div class="moment-comment"><span class="commenter">王氏：</span>小两口日子过得和和美美，娘就放心了。</div>
+                    <div class="moment-comment"><span class="commenter">李清照回复赵明诚：</span>泼茶之乐，唯君知之。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态3 -->
+        <div class="moment">
+            <div class="moment-avatar">清</div>
+            <div class="moment-body">
+                <div class="moment-text">明诚又赴任远行，独留我一人守着满院黄花。今夜月满西楼，不知他何时能回。雁字回时，月满西楼……</div>
+                <div class="moment-date">大观年间 · 独居青州</div>
+                <div class="moment-actions">💬 评论　❤️ 赞</div>
+                <div class="moment-likes">
+                    <span class="liker">赵明诚</span>、<span class="liker">王氏</span>、<span class="liker">闺中密友</span>、<span class="liker">青州邻里</span>、<span class="liker">侍女小荷</span> 等 9 人觉得很赞
+                </div>
+                <div class="moment-comments">
+                    <div class="moment-comment"><span class="commenter">赵明诚：</span>等我，锦书已寄。</div>
+                    <div class="moment-comment"><span class="commenter">李清照回复赵明诚：</span>此情无计可消除，才下眉头，却上心头。</div>
+                    <div class="moment-comment"><span class="commenter">闺中密友：</span>易安莫愁，好男儿志在四方，等他归来便是。</div>
+                    <div class="moment-comment"><span class="commenter">侍女小荷：</span>夫人，夜深了，早些歇息吧，明日还要整理金石拓片。</div>
+                    <div class="moment-comment"><span class="commenter">王氏：</span>女儿，常回家看看，娘给你做你爱吃的。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态4 -->
+        <div class="moment">
+            <div class="moment-avatar">清</div>
+            <div class="moment-body">
+                <div class="moment-text">建康噩耗传来，明诚走了。二十八年夫妻，一朝永诀。我携金石书画南渡，一路盗匪兵燹，所藏十不存一</div>
+                <div class="moment-date">建炎三年 · 秋</div>
+                <div class="moment-actions">💬 评论　❤️ 赞</div>
+                <div class="moment-likes">
+                    <span class="liker">綦崇礼</span>、<span class="liker">王氏</span>、<span class="liker">李迒</span>、<span class="liker">南渡文人圈</span>、<span class="liker">建康旧友</span> 等 24 人觉得很赞
+                </div>
+                <div class="moment-comments">
+                    <div class="moment-comment"><span class="commenter">綦崇礼：</span>易安节哀，保重身体。</div>
+                    <div class="moment-comment"><span class="commenter">王氏：</span>女儿，娘心疼你……</div>
+                    <div class="moment-comment"><span class="commenter">李迒：</span>姐姐，若有难处，务必来信告知。</div>
+                    <div class="moment-comment"><span class="commenter">建康旧友：</span>明诚兄一生痴迷金石，可惜天不假年……</div>
+                    <div class="moment-comment"><span class="commenter">李清照回复綦崇礼：</span>谢君挂念，易安自当珍重。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态5 -->
+        <div class="moment">
+            <div class="moment-avatar">清</div>
+            <div class="moment-body">
+                <div class="moment-text">独居临安，秋风秋雨，梧桐落叶。欲寻旧日时光，却只见冷冷清清。这愁，怎一个愁字了得。</div>
+                <div class="moment-date">绍兴年间 · 晚年</div>
+                <div class="moment-actions">💬 评论　❤️ 赞</div>
+                <div class="moment-likes">
+                    <span class="liker">友人们</span>、<span class="liker">临安词人圈</span>、<span class="liker">朱淑真</span>、<span class="liker">晚辈学子</span>、<span class="liker">街坊邻居</span> 等 20 人觉得很赞
+                </div>
+                <div class="moment-comments">
+                    <div class="moment-comment"><span class="commenter">友人乙：</span>易安词作，字字泣血。</div>
+                    <div class="moment-comment"><span class="commenter">李清照回复友人乙：</span>寻寻觅觅，冷冷清清，凄凄惨惨戚戚。</div>
+                    <div class="moment-comment"><span class="commenter">朱淑真：</span>读易安词，如见其人，愿姐姐珍重。</div>
+                    <div class="moment-comment"><span class="commenter">晚辈学子：</span>先生之词，我等后学仰慕已久，望先生保重。</div>
+                    <div class="moment-comment"><span class="commenter">临安词人圈：</span>易安居士乃我辈楷模，保重保重。</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+    // 切换标签
+    function switchTab(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 返回顶部按钮显示控制
+    window.addEventListener('scroll', function() {
+        const btn = document.getElementById('backTop');
+        if (window.scrollY > 300) {
+            btn.classList.add('show');
+        } else {
+            btn.classList.remove('show');
+        }
+    });
+</script>
+
+</body>
+</html>
